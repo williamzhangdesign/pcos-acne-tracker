@@ -1,0 +1,29 @@
+# Android
+app/.gradle/
+app/build/
+app/local.properties
+app/*.iml
+.idea/
+
+# Python / ML
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+*.h5
+*.pt
+*.pth
+*.ckpt
+
+# Data (keep structure, ignore raw files)
+data/raw/
+data/processed/
+*.csv
+*.zip
+*.tar.gz
+
+# OS
+.DS_Store
+Thumbs.db
