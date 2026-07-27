@@ -27,3 +27,8 @@ data/processed/
 # OS
 .DS_Store
 Thumbs.db
+# Streamlit
+.streamlit/
+
+# Local SQLite database
+data/tracker.db 
