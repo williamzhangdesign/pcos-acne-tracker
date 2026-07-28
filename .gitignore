@@ -27,8 +27,10 @@ data/processed/
 # OS
 .DS_Store
 Thumbs.db
-# Streamlit
-.streamlit/
+# Streamlit: keep config.toml (it carries the upload limits the deployed
+# app relies on) but never commit secrets.
+.streamlit/*
+!.streamlit/config.toml
 
 # Local SQLite database
 data/tracker.db
