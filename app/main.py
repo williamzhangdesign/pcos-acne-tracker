@@ -9,17 +9,19 @@ import pandas as pd
 import streamlit as st
 
 
-# Find the main project folder.
+# ---------------------------------------------------------
+# Project setup
+# ---------------------------------------------------------
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# Allow Python to find the ml folder.
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from food.trigger_detector import detect_dietary_triggers
 from ml.severity import classify_acne_severity
 
 
-# Create the data folder if it does not already exist.
 DATA_FOLDER = PROJECT_ROOT / "data"
 DATA_FOLDER.mkdir(exist_ok=True)
 
@@ -32,6 +34,10 @@ st.set_page_config(
     layout="centered",
 )
 
+
+# ---------------------------------------------------------
+# Database functions
+# ---------------------------------------------------------
 
 def connect_to_database() -> sqlite3.Connection:
     """Open the local SQLite database."""
@@ -66,7 +72,10 @@ def create_database_tables() -> None:
         )
 
 
-def save_acne_record(lesion_count: int, severity: str) -> None:
+def save_acne_record(
+    lesion_count: int,
+    severity: str,
+) -> None:
     """Save an acne result in the database."""
     with connect_to_database() as connection:
         connection.execute(
@@ -92,7 +101,7 @@ def save_food_record(
     dairy: bool,
     refined_sugar: bool,
 ) -> None:
-    """Save a food entry in the database."""
+    """Save a food entry and its reviewed categories."""
     with connect_to_database() as connection:
         connection.execute(
             """
@@ -120,7 +129,10 @@ def load_acne_records() -> pd.DataFrame:
     with connect_to_database() as connection:
         return pd.read_sql_query(
             """
-            SELECT recorded_at, lesion_count, severity
+            SELECT
+                recorded_at,
+                lesion_count,
+                severity
             FROM acne_records
             ORDER BY recorded_at
             """,
@@ -146,7 +158,12 @@ def load_food_records() -> pd.DataFrame:
         )
 
 
+# ---------------------------------------------------------
+# Capture page
+# ---------------------------------------------------------
+
 def show_capture_page() -> None:
+    """Display the image upload and acne score page."""
     st.header("Capture and Acne Score")
 
     st.write(
@@ -157,74 +174,281 @@ def show_capture_page() -> None:
     uploaded_image = st.file_uploader(
         "Choose a facial image",
         type=["jpg", "jpeg", "png"],
+        key="facial_image_uploader",
     )
 
-    if uploaded_image is not None:
-        st.image(
-            uploaded_image,
-            caption="Selected image",
-            use_container_width=True,
+    if uploaded_image is None:
+        st.info("Upload a JPG or PNG facial image to begin.")
+        return
+
+    st.image(
+        uploaded_image,
+        caption="Selected image",
+        use_container_width=True,
+    )
+
+    st.info(
+        "Prototype mode: the lesion count is currently entered manually. "
+        "Do not present this value as an automatic computer-vision result."
+    )
+
+    lesion_count = st.number_input(
+        "Lesion count",
+        min_value=0,
+        max_value=500,
+        value=18,
+        step=1,
+        key="manual_lesion_count",
+    )
+
+    severity = classify_acne_severity(int(lesion_count))
+
+    first_column, second_column = st.columns(2)
+
+    with first_column:
+        st.metric(
+            label="Lesion count",
+            value=int(lesion_count),
         )
 
-        st.info(
-            "Prototype mode: enter the lesion count manually. "
-            "Do not claim that this number was automatically detected."
+    with second_column:
+        st.metric(
+            label="Estimated severity",
+            value=severity,
         )
 
-        lesion_count = st.number_input(
-            "Lesion count",
-            min_value=0,
-            max_value=500,
-            value=18,
-            step=1,
+    if st.button(
+        "Save acne result",
+        type="primary",
+        key="save_acne_result",
+    ):
+        save_acne_record(
+            lesion_count=int(lesion_count),
+            severity=severity,
         )
 
-        severity = classify_acne_severity(int(lesion_count))
+        st.success("The acne result was saved.")
 
-        first_column, second_column = st.columns(2)
 
-        with first_column:
-            st.metric("Lesion count", int(lesion_count))
+# ---------------------------------------------------------
+# Food log page
+# ---------------------------------------------------------
 
-        with second_column:
-            st.metric("Severity", severity)
+def initialize_food_log_state() -> None:
+    """Create Streamlit session-state values for the food page."""
+    default_values = {
+        "analyzed_food_description": "",
+        "suggested_high_glycemic": False,
+        "suggested_dairy": False,
+        "suggested_refined_sugar": False,
+        "matched_high_glycemic": (),
+        "matched_dairy": (),
+        "matched_refined_sugar": (),
+        "food_saved_message": "",
+    }
 
-        if st.button("Save acne result", type="primary"):
-            save_acne_record(
-                lesion_count=int(lesion_count),
-                severity=severity,
-            )
-            st.success("The acne result was saved.")
+    for key, value in default_values.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+
+def analyze_food_description(food_description: str) -> None:
+    """Analyze a meal and save its suggestions in session state."""
+    detection_result = detect_dietary_triggers(food_description)
+
+    st.session_state.analyzed_food_description = food_description.strip()
+
+    st.session_state.suggested_high_glycemic = (
+        detection_result.high_glycemic
+    )
+    st.session_state.suggested_dairy = detection_result.dairy
+    st.session_state.suggested_refined_sugar = (
+        detection_result.refined_sugar
+    )
+
+    st.session_state.matched_high_glycemic = (
+        detection_result.matched_high_glycemic
+    )
+    st.session_state.matched_dairy = (
+        detection_result.matched_dairy
+    )
+    st.session_state.matched_refined_sugar = (
+        detection_result.matched_refined_sugar
+    )
+
+
+def clear_food_analysis_state() -> None:
+    """Clear only the saved analysis values after a food entry is saved."""
+    st.session_state.analyzed_food_description = ""
+
+    st.session_state.suggested_high_glycemic = False
+    st.session_state.suggested_dairy = False
+    st.session_state.suggested_refined_sugar = False
+
+    st.session_state.matched_high_glycemic = ()
+    st.session_state.matched_dairy = ()
+    st.session_state.matched_refined_sugar = ()
 
 
 def show_food_log_page() -> None:
+    """Display automatic dietary-trigger suggestions and food logging."""
+    initialize_food_log_state()
+
     st.header("Food Log")
+
+    st.write(
+        "Describe your meal in ordinary language. The app will suggest "
+        "dietary categories for you to review before saving."
+    )
+
+    if st.session_state.food_saved_message:
+        st.success(st.session_state.food_saved_message)
+        st.session_state.food_saved_message = ""
 
     food_description = st.text_input(
         "What did you eat?",
         placeholder="Example: cereal with milk and sweetened coffee",
+        key="food_description_input",
     )
 
-    high_glycemic = st.checkbox("High-glycemic food")
-    dairy = st.checkbox("Contains dairy")
-    refined_sugar = st.checkbox("Contains refined sugar")
-
-    if st.button("Save food entry", type="primary"):
+    if st.button(
+        "Analyze meal",
+        key="analyze_meal_button",
+    ):
         if not food_description.strip():
             st.warning("Please type a food or meal first.")
-            return
+        else:
+            analyze_food_description(food_description)
 
+    has_analysis = bool(
+        st.session_state.analyzed_food_description
+    )
+
+    if not has_analysis:
+        st.info(
+            "Enter a meal description and select Analyze meal "
+            "to receive automatic suggestions."
+        )
+        return
+
+    st.subheader("Suggested dietary categories")
+
+    detected_labels: list[str] = []
+
+    if st.session_state.suggested_high_glycemic:
+        detected_labels.append("High glycemic")
+
+    if st.session_state.suggested_dairy:
+        detected_labels.append("Dairy")
+
+    if st.session_state.suggested_refined_sugar:
+        detected_labels.append("Refined sugar")
+
+    if detected_labels:
+        st.success(
+            "Suggested categories: "
+            + ", ".join(detected_labels)
+        )
+    else:
+        st.info(
+            "No supported dietary category was detected. "
+            "You can still select categories manually."
+        )
+
+    st.caption(
+        "Please review these suggestions. The keyword detector "
+        "may be incomplete or incorrect."
+    )
+
+    high_glycemic = st.checkbox(
+        "High-glycemic food",
+        value=st.session_state.suggested_high_glycemic,
+        key="reviewed_high_glycemic",
+    )
+
+    dairy = st.checkbox(
+        "Contains dairy",
+        value=st.session_state.suggested_dairy,
+        key="reviewed_dairy",
+    )
+
+    refined_sugar = st.checkbox(
+        "Contains refined sugar",
+        value=st.session_state.suggested_refined_sugar,
+        key="reviewed_refined_sugar",
+    )
+
+    with st.expander("Why were these categories suggested?"):
+        any_match_found = False
+
+        if st.session_state.matched_high_glycemic:
+            any_match_found = True
+            st.write(
+                "**High-glycemic matches:** "
+                + ", ".join(
+                    st.session_state.matched_high_glycemic
+                )
+            )
+
+        if st.session_state.matched_dairy:
+            any_match_found = True
+            st.write(
+                "**Dairy matches:** "
+                + ", ".join(
+                    st.session_state.matched_dairy
+                )
+            )
+
+        if st.session_state.matched_refined_sugar:
+            any_match_found = True
+            st.write(
+                "**Refined-sugar matches:** "
+                + ", ".join(
+                    st.session_state.matched_refined_sugar
+                )
+            )
+
+        if not any_match_found:
+            st.write(
+                "No keywords from the current dietary lists "
+                "were found."
+            )
+
+        st.caption(
+            "This prototype uses transparent keyword matching. "
+            "It does not calculate exact glycemic load or provide "
+            "medical or nutritional advice."
+        )
+
+    if st.button(
+        "Save reviewed food entry",
+        type="primary",
+        key="save_reviewed_food_entry",
+    ):
         save_food_record(
-            food_description=food_description.strip(),
+            food_description=(
+                st.session_state.analyzed_food_description
+            ),
             high_glycemic=high_glycemic,
             dairy=dairy,
             refined_sugar=refined_sugar,
         )
 
-        st.success("The food entry was saved.")
+        st.session_state.food_saved_message = (
+            "The food entry and reviewed categories were saved."
+        )
 
+        clear_food_analysis_state()
+
+        st.rerun()
+
+
+# ---------------------------------------------------------
+# Dashboard page
+# ---------------------------------------------------------
 
 def show_dashboard_page() -> None:
+    """Display saved acne and dietary records."""
     st.header("Dashboard")
 
     acne_data = load_acne_records()
@@ -233,10 +457,16 @@ def show_dashboard_page() -> None:
     first_column, second_column = st.columns(2)
 
     with first_column:
-        st.metric("Acne records", len(acne_data))
+        st.metric(
+            label="Acne records",
+            value=len(acne_data),
+        )
 
     with second_column:
-        st.metric("Food records", len(food_data))
+        st.metric(
+            label="Food records",
+            value=len(food_data),
+        )
 
     st.subheader("Acne trend")
 
@@ -253,8 +483,23 @@ def show_dashboard_page() -> None:
 
         st.line_chart(chart_data)
 
+        acne_display = acne_data.copy()
+        acne_display["recorded_at"] = (
+            acne_display["recorded_at"].dt.strftime(
+                "%Y-%m-%d %H:%M"
+            )
+        )
+
+        acne_display = acne_display.rename(
+            columns={
+                "recorded_at": "Recorded at",
+                "lesion_count": "Lesion count",
+                "severity": "Severity",
+            }
+        )
+
         st.dataframe(
-            acne_data,
+            acne_display,
             use_container_width=True,
             hide_index=True,
         )
@@ -281,8 +526,49 @@ def show_dashboard_page() -> None:
 
         st.bar_chart(trigger_summary)
 
+        food_display = food_data.copy()
+
+        food_display["recorded_at"] = pd.to_datetime(
+            food_display["recorded_at"]
+        ).dt.strftime("%Y-%m-%d %H:%M")
+
+        food_display["high_glycemic"] = food_display[
+            "high_glycemic"
+        ].map(
+            {
+                1: "Yes",
+                0: "No",
+            }
+        )
+
+        food_display["dairy"] = food_display["dairy"].map(
+            {
+                1: "Yes",
+                0: "No",
+            }
+        )
+
+        food_display["refined_sugar"] = food_display[
+            "refined_sugar"
+        ].map(
+            {
+                1: "Yes",
+                0: "No",
+            }
+        )
+
+        food_display = food_display.rename(
+            columns={
+                "recorded_at": "Recorded at",
+                "food_description": "Food description",
+                "high_glycemic": "High glycemic",
+                "dairy": "Dairy",
+                "refined_sugar": "Refined sugar",
+            }
+        )
+
         st.dataframe(
-            food_data,
+            food_display,
             use_container_width=True,
             hide_index=True,
         )
@@ -293,10 +579,18 @@ def show_dashboard_page() -> None:
     )
 
 
+# ---------------------------------------------------------
+# Profile page
+# ---------------------------------------------------------
+
 def show_profile_page() -> None:
+    """Display basic profile and prototype settings."""
     st.header("Profile and Settings")
 
-    st.text_input("Display name")
+    st.text_input(
+        "Display name",
+        key="display_name",
+    )
 
     st.selectbox(
         "Skin tone category for future model evaluation",
@@ -309,19 +603,30 @@ def show_profile_page() -> None:
             "Fitzpatrick V",
             "Fitzpatrick VI",
         ],
+        key="skin_tone_category",
     )
 
-    st.checkbox("Enable a daily logging reminder")
+    st.checkbox(
+        "Enable a daily logging reminder",
+        key="daily_reminder",
+    )
 
     st.warning(
-        "This project is an educational prototype and is not a medical device."
+        "This project is an educational prototype and is not "
+        "a medical device."
     )
 
 
+# ---------------------------------------------------------
+# Main application
+# ---------------------------------------------------------
+
 def main() -> None:
+    """Start the Streamlit application."""
     create_database_tables()
 
     st.title("PCOS Acne Severity Tracker")
+
     st.caption(
         "A mobile-oriented acne and dietary logging prototype"
     )
@@ -338,10 +643,13 @@ def main() -> None:
 
     if selected_page == "Capture":
         show_capture_page()
+
     elif selected_page == "Food Log":
         show_food_log_page()
+
     elif selected_page == "Dashboard":
         show_dashboard_page()
+
     else:
         show_profile_page()
 
