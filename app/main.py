@@ -661,7 +661,10 @@ def show_dashboard_page() -> None:
             }
         ).set_index("Category")
 
-        st.bar_chart(trigger_summary)
+        st.bar_chart(
+            trigger_summary,
+            horizontal=True,
+        )
 
         food_display = food_data.copy()
 
