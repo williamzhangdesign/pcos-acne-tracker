@@ -1,0 +1,14 @@
+{
+  "classes": [
+    "IGA0",
+    "IGA1",
+    "IGA2",
+    "IGA3",
+    "IGA4"
+  ],
+  "train_images": 6316,
+  "test_images": 135,
+  "test_accuracy": 0.6,
+  "feature_extractor": "ml.features.extract_features",
+  "dataset": "Roboflow Acne Severity Classification (Taschenbier), v1"
+}

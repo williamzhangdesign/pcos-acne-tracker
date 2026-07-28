@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import sqlite3
 import sys
+import uuid
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+from PIL import Image
 
 
 # ---------------------------------------------------------
@@ -20,11 +22,21 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from food.trigger_detector import detect_dietary_triggers
 from food.usda_client import USDAFoodDataError, search_usda_meal
+from ml.lesion_detector import detect_lesions
 from ml.severity import classify_acne_severity
+from ml.severity_classifier import (
+    format_severity,
+    predict_severity,
+    severity_from_description,
+)
 
 
 DATA_FOLDER = PROJECT_ROOT / "data"
 DATA_FOLDER.mkdir(exist_ok=True)
+
+# Uploaded face photos are saved here with unique filenames.
+IMAGES_FOLDER = DATA_FOLDER / "images"
+IMAGES_FOLDER.mkdir(exist_ok=True)
 
 DATABASE_PATH = DATA_FOLDER / "tracker.db"
 
@@ -54,10 +66,26 @@ def create_database_tables() -> None:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 recorded_at TEXT NOT NULL,
                 lesion_count INTEGER NOT NULL,
-                severity TEXT NOT NULL
+                severity TEXT NOT NULL,
+                image_path TEXT,
+                source TEXT NOT NULL DEFAULT 'manual',
+                confidence REAL
             )
             """
         )
+
+        # Guarded migration for any acne_records table created before the
+        # image_path/source/confidence columns existed.
+        for migration in (
+            "ALTER TABLE acne_records ADD COLUMN image_path TEXT",
+            "ALTER TABLE acne_records ADD COLUMN source "
+            "TEXT NOT NULL DEFAULT 'manual'",
+            "ALTER TABLE acne_records ADD COLUMN confidence REAL",
+        ):
+            try:
+                connection.execute(migration)
+            except sqlite3.OperationalError:
+                pass  # Column already exists.
 
         connection.execute(
             """
@@ -76,6 +104,9 @@ def create_database_tables() -> None:
 def save_acne_record(
     lesion_count: int,
     severity: str,
+    image_path: str | None = None,
+    source: str = "manual",
+    confidence: float | None = None,
 ) -> None:
     """Save an acne result in the database."""
     with connect_to_database() as connection:
@@ -84,16 +115,33 @@ def save_acne_record(
             INSERT INTO acne_records (
                 recorded_at,
                 lesion_count,
-                severity
+                severity,
+                image_path,
+                source,
+                confidence
             )
-            VALUES (?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
             (
                 datetime.now().isoformat(timespec="seconds"),
                 lesion_count,
                 severity,
+                image_path,
+                source,
+                confidence,
             ),
         )
+
+
+def save_uploaded_image(uploaded_image) -> Path:
+    """Save an uploaded image to disk under a unique filename."""
+    suffix = Path(uploaded_image.name).suffix or ".png"
+    unique_name = (
+        f"{datetime.now():%Y%m%d%H%M%S}_{uuid.uuid4().hex[:8]}{suffix}"
+    )
+    destination = IMAGES_FOLDER / unique_name
+    destination.write_bytes(uploaded_image.getbuffer())
+    return destination
 
 
 def save_food_record(
@@ -133,7 +181,10 @@ def load_acne_records() -> pd.DataFrame:
             SELECT
                 recorded_at,
                 lesion_count,
-                severity
+                severity,
+                image_path,
+                source,
+                confidence
             FROM acne_records
             ORDER BY recorded_at
             """,
@@ -168,8 +219,18 @@ def show_capture_page() -> None:
     st.header("Capture and Acne Score")
 
     st.write(
-        "Upload a facial image and record an acne lesion count. "
-        "The live computer-vision API will be connected separately."
+        "Upload a facial image and record an acne lesion count, either "
+        "automatically or by hand."
+    )
+
+    # The hosted build runs as a single shared instance with one database,
+    # so any upload is visible to every other visitor on the Dashboard.
+    st.warning(
+        "**Shared public demo - do not upload a real photo of yourself or "
+        "of anyone else.** This deployment stores every upload in one "
+        "shared database, so images and results are visible to all other "
+        "visitors. Use a sample or stock image. Uploads are also erased "
+        "whenever the server restarts."
     )
 
     uploaded_image = st.file_uploader(
@@ -178,62 +239,109 @@ def show_capture_page() -> None:
         key="facial_image_uploader",
     )
 
-    if uploaded_image is None:
-        st.info("Upload a JPG or PNG facial image to begin.")
-        return
-
-    st.image(
-        uploaded_image,
-        caption="Selected image",
-        use_container_width=True,
-    )
-
-    st.info(
-        "Prototype mode: the lesion count is currently entered manually. "
-        "Do not present this value as an automatic computer-vision result."
-    )
-
-    lesion_count = st.number_input(
-        "Lesion count",
-        min_value=0,
-        max_value=500,
-        value=18,
-        step=1,
-        key="manual_lesion_count",
-    )
-
-    severity = classify_acne_severity(int(lesion_count))
-
-    first_column, second_column = st.columns(2)
-
-    with first_column:
-        st.metric(
-            label="Lesion count",
-            value=int(lesion_count),
+    if uploaded_image is not None:
+        st.image(
+            uploaded_image,
+            caption="Selected image",
+            use_container_width=True,
         )
 
-    with second_column:
-        st.metric(
-            label="Estimated severity",
-            value=severity,
+        count_source = st.radio(
+            "Lesion count",
+            ["Automated (beta)", "Enter manually"],
+            horizontal=True,
         )
 
-    if st.button(
-        "Save acne result",
-        type="primary",
-        key="save_acne_result",
-    ):
-        save_acne_record(
-            lesion_count=int(lesion_count),
-            severity=severity,
-        )
+        confidence = None
 
-        st.success("The acne result was saved.")
+        if count_source == "Automated (beta)":
+            st.info(
+                "Automated mode: a severity classifier (trained on the "
+                "Roboflow Acne Severity Classification dataset) predicts "
+                "an IGA-scale grade from the photo, and an erythema-based "
+                "heuristic counts inflammatory ('active') lesions for "
+                "reference - comedones are deliberately not counted. Both "
+                "are rough research-prototype estimates, not a diagnosis; "
+                "review them before saving."
+            )
 
+            uploaded_image.seek(0)
+            pil_image = Image.open(uploaded_image)
 
-# ---------------------------------------------------------
-# Food log page
-# ---------------------------------------------------------
+            prediction = predict_severity(pil_image)
+            severity = format_severity(prediction.grade)
+            confidence = prediction.confidence
+
+            uploaded_image.seek(0)
+            detection = detect_lesions(Image.open(uploaded_image))
+            lesion_count = detection.lesion_count
+            source = "automated"
+
+            patch_column, overlay_column = st.columns(2)
+            with patch_column:
+                st.image(
+                    prediction.analyzed_patch,
+                    caption="Skin patch analyzed by the model",
+                    use_container_width=True,
+                )
+            with overlay_column:
+                st.image(
+                    detection.annotated_image,
+                    caption="Inflammatory lesions detected (reference only)",
+                    use_container_width=True,
+                )
+
+            first_column, second_column, third_column = st.columns(3)
+            with first_column:
+                st.metric("Predicted severity", severity)
+            with second_column:
+                st.metric("Model confidence", f"{confidence:.0%}")
+            with third_column:
+                st.metric("Inflammatory lesions", lesion_count)
+        else:
+            st.info(
+                "Manual mode: count the inflammatory ('active') lesions "
+                "yourself - papules, pustules and nodules, not comedones - "
+                "so the number stays comparable with automated entries. "
+                "Do not claim that this number was automatically detected."
+            )
+
+            lesion_count = int(
+                st.number_input(
+                    "Inflammatory lesion count",
+                    min_value=0,
+                    max_value=500,
+                    value=18,
+                    step=1,
+                    key="manual_lesion_count",
+                )
+            )
+            source = "manual"
+            severity = severity_from_description(
+                classify_acne_severity(int(lesion_count))
+            )
+
+            first_column, second_column = st.columns(2)
+            with first_column:
+                st.metric("Inflammatory lesions", int(lesion_count))
+            with second_column:
+                st.metric("Severity", severity)
+
+        if st.button(
+            "Save acne result",
+            type="primary",
+            key="save_acne_result",
+        ):
+            saved_image_path = save_uploaded_image(uploaded_image)
+            save_acne_record(
+                lesion_count=int(lesion_count),
+                severity=severity,
+                image_path=str(saved_image_path.relative_to(PROJECT_ROOT)),
+                source=source,
+                confidence=confidence,
+            )
+            st.success("The acne result was saved.")
+
 
 def initialize_food_log_state() -> None:
     """Create Streamlit session-state values for the food page."""
@@ -591,25 +699,50 @@ def show_dashboard_page() -> None:
     acne_data = load_acne_records()
     food_data = load_food_records()
 
-    first_column, second_column = st.columns(2)
+    first_column, second_column, third_column, fourth_column = st.columns(4)
 
     with first_column:
-        st.metric(
-            label="Acne records",
-            value=len(acne_data),
-        )
+        st.metric("Acne records", len(acne_data))
 
     with second_column:
-        st.metric(
-            label="Food records",
-            value=len(food_data),
+        st.metric("Food records", len(food_data))
+
+    with third_column:
+        automated_count = (
+            int((acne_data["source"] == "automated").sum())
+            if not acne_data.empty
+            else 0
         )
+        st.metric("Automated acne records", automated_count)
+
+    with fourth_column:
+        automated_confidence = (
+            acne_data.loc[acne_data["source"] == "automated", "confidence"]
+            if not acne_data.empty
+            else pd.Series(dtype=float)
+        )
+        average_confidence = (
+            f"{automated_confidence.mean():.0%}"
+            if not automated_confidence.empty
+            else "-"
+        )
+        st.metric("Avg. model confidence", average_confidence)
 
     st.subheader("Acne trend")
 
     if acne_data.empty:
         st.info("No acne records have been saved yet.")
     else:
+        latest_record = acne_data.iloc[-1]
+        if latest_record["image_path"]:
+            latest_image_path = PROJECT_ROOT / latest_record["image_path"]
+            if latest_image_path.exists():
+                st.image(
+                    str(latest_image_path),
+                    caption="Most recent capture",
+                    width=200,
+                )
+
         acne_data["recorded_at"] = pd.to_datetime(
             acne_data["recorded_at"]
         )
@@ -627,11 +760,18 @@ def show_dashboard_page() -> None:
             )
         )
 
+        acne_display["confidence"] = acne_display["confidence"].map(
+            lambda value: "-" if pd.isna(value) else f"{value:.0%}"
+        )
+
         acne_display = acne_display.rename(
             columns={
                 "recorded_at": "Recorded at",
-                "lesion_count": "Lesion count",
+                "lesion_count": "Inflammatory lesions",
                 "severity": "Severity",
+                "image_path": "Image",
+                "source": "Source",
+                "confidence": "Model confidence",
             }
         )
 
@@ -672,30 +812,10 @@ def show_dashboard_page() -> None:
             food_display["recorded_at"]
         ).dt.strftime("%Y-%m-%d %H:%M")
 
-        food_display["high_glycemic"] = food_display[
-            "high_glycemic"
-        ].map(
-            {
-                1: "Yes",
-                0: "No",
-            }
-        )
-
-        food_display["dairy"] = food_display["dairy"].map(
-            {
-                1: "Yes",
-                0: "No",
-            }
-        )
-
-        food_display["refined_sugar"] = food_display[
-            "refined_sugar"
-        ].map(
-            {
-                1: "Yes",
-                0: "No",
-            }
-        )
+        for flag_column in ("high_glycemic", "dairy", "refined_sugar"):
+            food_display[flag_column] = food_display[flag_column].map(
+                {1: "Yes", 0: "No"}
+            )
 
         food_display = food_display.rename(
             columns={
@@ -718,10 +838,6 @@ def show_dashboard_page() -> None:
         "It does not diagnose PCOS, acne, or dietary causes."
     )
 
-
-# ---------------------------------------------------------
-# Profile page
-# ---------------------------------------------------------
 
 def show_profile_page() -> None:
     """Display basic profile and prototype settings."""

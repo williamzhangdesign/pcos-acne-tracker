@@ -31,4 +31,7 @@ Thumbs.db
 .streamlit/
 
 # Local SQLite database
-data/tracker.db 
+data/tracker.db
+
+# Uploaded face photos (never commit)
+data/images/
