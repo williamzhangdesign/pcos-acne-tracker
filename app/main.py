@@ -19,6 +19,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from food.trigger_detector import detect_dietary_triggers
+from food.usda_client import USDAFoodDataError, search_usda_meal
 from ml.severity import classify_acne_severity
 
 
@@ -245,6 +246,11 @@ def initialize_food_log_state() -> None:
         "matched_dairy": (),
         "matched_refined_sugar": (),
         "food_saved_message": "",
+        "usda_result": None,
+        "usda_error": None,
+        "reviewed_high_glycemic": False,
+        "reviewed_dairy": False,
+        "reviewed_refined_sugar": False,
     }
 
     for key, value in default_values.items():
@@ -276,6 +282,32 @@ def analyze_food_description(food_description: str) -> None:
         detection_result.matched_refined_sugar
     )
 
+    # Keep the review checkboxes synchronized with the newest analysis.
+    st.session_state.reviewed_high_glycemic = (
+        detection_result.high_glycemic
+    )
+    st.session_state.reviewed_dairy = detection_result.dairy
+    st.session_state.reviewed_refined_sugar = (
+        detection_result.refined_sugar
+    )
+
+
+def get_usda_result(food_description: str):
+    """Return USDA meal results or a readable error message."""
+    try:
+        api_key = st.secrets["USDA_API_KEY"]
+    except (KeyError, FileNotFoundError):
+        return None, "The USDA API key is not configured."
+
+    try:
+        result = search_usda_meal(
+            meal_description=food_description,
+            api_key=api_key,
+        )
+        return result, None
+
+    except USDAFoodDataError as error:
+        return None, str(error)
 
 def clear_food_analysis_state() -> None:
     """Clear only the saved analysis values after a food entry is saved."""
@@ -289,6 +321,12 @@ def clear_food_analysis_state() -> None:
     st.session_state.matched_dairy = ()
     st.session_state.matched_refined_sugar = ()
 
+    st.session_state.usda_result = None
+    st.session_state.usda_error = None
+
+    st.session_state.reviewed_high_glycemic = False
+    st.session_state.reviewed_dairy = False
+    st.session_state.reviewed_refined_sugar = False
 
 def show_food_log_page() -> None:
     """Display automatic dietary-trigger suggestions and food logging."""
@@ -319,6 +357,12 @@ def show_food_log_page() -> None:
             st.warning("Please type a food or meal first.")
         else:
             analyze_food_description(food_description)
+
+            usda_result, usda_error = get_usda_result(
+                food_description
+            )
+            st.session_state.usda_result = usda_result
+            st.session_state.usda_error = usda_error
 
     has_analysis = bool(
         st.session_state.analyzed_food_description
@@ -362,19 +406,16 @@ def show_food_log_page() -> None:
 
     high_glycemic = st.checkbox(
         "High-glycemic food",
-        value=st.session_state.suggested_high_glycemic,
         key="reviewed_high_glycemic",
     )
 
     dairy = st.checkbox(
         "Contains dairy",
-        value=st.session_state.suggested_dairy,
         key="reviewed_dairy",
     )
 
     refined_sugar = st.checkbox(
         "Contains refined sugar",
-        value=st.session_state.suggested_refined_sugar,
         key="reviewed_refined_sugar",
     )
 
@@ -418,6 +459,93 @@ def show_food_log_page() -> None:
             "This prototype uses transparent keyword matching. "
             "It does not calculate exact glycemic load or provide "
             "medical or nutritional advice."
+        )
+
+    st.subheader("USDA nutrition lookup")
+
+    usda_result = st.session_state.usda_result
+    usda_error = st.session_state.usda_error
+
+    if usda_result is not None:
+        st.success(
+            f"USDA matched {len(usda_result.foods)} "
+            "food component(s)."
+        )
+
+        nutrition_rows = []
+
+        for food in usda_result.foods:
+            nutrition_rows.append(
+                {
+                    "Your entry": food.original_food_text.title(),
+                    "USDA match": food.description.title(),
+                    "Data type": food.data_type,
+                    "Calories": round(food.calories, 1),
+                    "Carbohydrate (g)": round(
+                        food.carbohydrate,
+                        1,
+                    ),
+                    "Sugars (g)": round(food.sugars, 1),
+                    "Protein (g)": round(food.protein, 1),
+                    "Fat (g)": round(food.fat, 1),
+                    "FDC ID": food.fdc_id,
+                }
+            )
+
+        st.dataframe(
+            pd.DataFrame(nutrition_rows),
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        st.write("**Approximate combined values**")
+
+        first_metric, second_metric, third_metric = st.columns(3)
+
+        with first_metric:
+            st.metric(
+                "Calories",
+                f"{usda_result.total_calories:.0f}",
+            )
+
+        with second_metric:
+            st.metric(
+                "Carbohydrate",
+                f"{usda_result.total_carbohydrate:.1f} g",
+            )
+
+        with third_metric:
+            st.metric(
+                "Total sugars",
+                f"{usda_result.total_sugars:.1f} g",
+            )
+
+        fourth_metric, fifth_metric = st.columns(2)
+
+        with fourth_metric:
+            st.metric(
+                "Protein",
+                f"{usda_result.total_protein:.1f} g",
+            )
+
+        with fifth_metric:
+            st.metric(
+                "Fat",
+                f"{usda_result.total_fat:.1f} g",
+            )
+
+        st.caption("Source: USDA FoodData Central.")
+
+        st.warning(
+            "These are approximate database matches. "
+            "Serving definitions may differ between USDA records, "
+            "so the combined values are not an exact meal calculation."
+        )
+
+    elif usda_error:
+        st.warning(
+            usda_error
+            + " The dietary-trigger detector still works."
         )
 
     if st.button(
