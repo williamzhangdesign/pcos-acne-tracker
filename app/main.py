@@ -251,6 +251,7 @@ def initialize_food_log_state() -> None:
         "reviewed_high_glycemic": False,
         "reviewed_dairy": False,
         "reviewed_refined_sugar": False,
+        "reset_food_form": False,
     }
 
     for key, value in default_values.items():
@@ -310,27 +311,35 @@ def get_usda_result(food_description: str):
         return None, str(error)
 
 def clear_food_analysis_state() -> None:
-    """Clear only the saved analysis values after a food entry is saved."""
-    st.session_state.analyzed_food_description = ""
-
-    st.session_state.suggested_high_glycemic = False
-    st.session_state.suggested_dairy = False
-    st.session_state.suggested_refined_sugar = False
-
-    st.session_state.matched_high_glycemic = ()
-    st.session_state.matched_dairy = ()
-    st.session_state.matched_refined_sugar = ()
-
-    st.session_state.usda_result = None
-    st.session_state.usda_error = None
-
-    st.session_state.reviewed_high_glycemic = False
-    st.session_state.reviewed_dairy = False
-    st.session_state.reviewed_refined_sugar = False
+    """Request a safe food-form reset on the next Streamlit rerun."""
+    st.session_state.reset_food_form = True
 
 def show_food_log_page() -> None:
     """Display automatic dietary-trigger suggestions and food logging."""
     initialize_food_log_state()
+
+    # Reset widget-backed values before their widgets are created.
+    # This avoids StreamlitAPIException after saving an entry.
+    if st.session_state.reset_food_form:
+        st.session_state.analyzed_food_description = ""
+
+        st.session_state.suggested_high_glycemic = False
+        st.session_state.suggested_dairy = False
+        st.session_state.suggested_refined_sugar = False
+
+        st.session_state.matched_high_glycemic = ()
+        st.session_state.matched_dairy = ()
+        st.session_state.matched_refined_sugar = ()
+
+        st.session_state.usda_result = None
+        st.session_state.usda_error = None
+
+        st.session_state.reviewed_high_glycemic = False
+        st.session_state.reviewed_dairy = False
+        st.session_state.reviewed_refined_sugar = False
+        st.session_state.food_description_input = ""
+
+        st.session_state.reset_food_form = False
 
     st.header("Food Log")
 
