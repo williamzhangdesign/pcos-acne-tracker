@@ -19,3 +19,21 @@ A mobile app that uses computer vision to grade acne severity from smartphone im
 - **Mobile:** Android (Kotlin + Jetpack Compose)
 - **CV model:** TFLite (trained on ACNE04 + Roboflow; tested on Google SCIN)
 - **Grading scale:** IGA (Investigator's Global Assessment)
+  
+## Automatic dietary trigger detection
+
+The Streamlit prototype includes a transparent keyword-based dietary
+classification module. When a user enters a meal description, the module
+suggests whether the entry may contain:
+
+- high-glycemic foods
+- dairy
+- refined sugar
+
+The matched keywords are shown to the user, and every suggestion can be
+corrected before saving. This feature is intended for prototype usability
+testing and self-reflection. It does not provide nutritional or medical
+diagnosis.
+
+A future version will replace or supplement the keyword lists with a
+validated nutrition database or external nutrition API.
