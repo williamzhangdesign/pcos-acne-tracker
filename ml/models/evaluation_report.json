@@ -1,0 +1,72 @@
+{
+  "detector": {
+    "very_light": {
+      "n": 133,
+      "spearman": 0.4269906131439056,
+      "median_count_iga0": 0.0,
+      "median_count_iga34": 2.0
+    },
+    "light": {
+      "n": 220,
+      "spearman": 0.24076064330877095,
+      "median_count_iga0": 0.0,
+      "median_count_iga34": 2.0
+    },
+    "intermediate": {
+      "n": 338,
+      "spearman": 0.36930071230634287,
+      "median_count_iga0": 1.0,
+      "median_count_iga34": 3.5
+    },
+    "tan": {
+      "n": 491,
+      "spearman": 0.378242994623278,
+      "median_count_iga0": 1.0,
+      "median_count_iga34": 6.0
+    },
+    "brown": {
+      "n": 577,
+      "spearman": 0.37532837345520154,
+      "median_count_iga0": 0.0,
+      "median_count_iga34": 4.0
+    },
+    "dark": {
+      "n": 138,
+      "spearman": 0.27608705556652163,
+      "median_count_iga0": 1.0,
+      "median_count_iga34": 4.0
+    },
+    "ALL": {
+      "n": 1897,
+      "spearman": 0.3594675424443989,
+      "median_count_iga0": 0.0,
+      "median_count_iga34": 4.0
+    }
+  },
+  "classifier": {
+    "intermediate": {
+      "n": 35,
+      "accuracy": 0.6285714285714286,
+      "within_one_grade": 0.8,
+      "mean_absolute_error": 0.6
+    },
+    "tan": {
+      "n": 53,
+      "accuracy": 0.6037735849056604,
+      "within_one_grade": 0.8490566037735849,
+      "mean_absolute_error": 0.5471698113207547
+    },
+    "brown": {
+      "n": 26,
+      "accuracy": 0.46153846153846156,
+      "within_one_grade": 0.7692307692307693,
+      "mean_absolute_error": 0.8076923076923077
+    },
+    "ALL": {
+      "n": 134,
+      "accuracy": 0.5970149253731343,
+      "within_one_grade": 0.835820895522388,
+      "mean_absolute_error": 0.582089552238806
+    }
+  }
+}

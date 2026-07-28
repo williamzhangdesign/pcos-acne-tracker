@@ -1,3 +1,7 @@
 streamlit
 pandas
 pillow
+opencv-python-headless
+numpy
+scikit-learn
+joblib

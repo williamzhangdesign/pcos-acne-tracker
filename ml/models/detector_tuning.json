@@ -1,0 +1,1102 @@
+[
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.44176272774367814,
+    "per_bucket_spearman": {
+      "brown": 0.43813962363341,
+      "dark": 0.4280192681739916,
+      "intermediate": 0.44048376777645804,
+      "light": 0.4370203250138513,
+      "tan": 0.4183049912016458,
+      "very_light": 0.4447977546137113
+    },
+    "worst_bucket_spearman": 0.4183049912016458,
+    "bucket_spread": 0.026492763412065468,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 5.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.4941864451268671,
+    "per_bucket_spearman": {
+      "brown": 0.5266977827523801,
+      "dark": 0.40702086300406687,
+      "intermediate": 0.48190963022906114,
+      "light": 0.5349903474707604,
+      "tan": 0.45281994950221427,
+      "very_light": 0.5589865191492213
+    },
+    "worst_bucket_spearman": 0.40702086300406687,
+    "bucket_spread": 0.1519656561451544,
+    "median_count_iga0": 3.0,
+    "median_count_iga4": 11.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.47605645580035816,
+    "per_bucket_spearman": {
+      "brown": 0.42988239932172606,
+      "dark": 0.4463737428432578,
+      "intermediate": 0.5872259296384248,
+      "light": 0.494539100118974,
+      "tan": 0.38381859374715704,
+      "very_light": 0.4437539166410644
+    },
+    "worst_bucket_spearman": 0.38381859374715704,
+    "bucket_spread": 0.20340733589126775,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 4.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.4551849590775684,
+    "per_bucket_spearman": {
+      "brown": 0.42832476566204225,
+      "dark": 0.5026943888892179,
+      "intermediate": 0.5522053367187217,
+      "light": 0.4706774329424024,
+      "tan": 0.3536775578532521,
+      "very_light": 0.4674053571214444
+    },
+    "worst_bucket_spearman": 0.3536775578532521,
+    "bucket_spread": 0.19852777886546963,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 3.5
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.43667962129664517,
+    "per_bucket_spearman": {
+      "brown": 0.4341040459014139,
+      "dark": 0.4078548605041888,
+      "intermediate": 0.49107514908794536,
+      "light": 0.4443377665596284,
+      "tan": 0.3410842145529158,
+      "very_light": 0.619652154825071
+    },
+    "worst_bucket_spearman": 0.3410842145529158,
+    "bucket_spread": 0.27856794027215515,
+    "median_count_iga0": 2.0,
+    "median_count_iga4": 9.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.5196469247620831,
+    "per_bucket_spearman": {
+      "brown": 0.5374491174391843,
+      "dark": 0.311846776086013,
+      "intermediate": 0.5765559665702839,
+      "light": 0.5416572764630441,
+      "tan": 0.45510232546676976,
+      "very_light": 0.5493560936498445
+    },
+    "worst_bucket_spearman": 0.311846776086013,
+    "bucket_spread": 0.26470919048427083,
+    "median_count_iga0": 3.0,
+    "median_count_iga4": 13.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.40839572228992094,
+    "per_bucket_spearman": {
+      "brown": 0.37477475070325594,
+      "dark": 0.4290207799945114,
+      "intermediate": 0.5250070869089447,
+      "light": 0.3099696438815189,
+      "tan": 0.34384527980607255,
+      "very_light": 0.44685352070050566
+    },
+    "worst_bucket_spearman": 0.3099696438815189,
+    "bucket_spread": 0.21503744302742583,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 3.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.42966321382967826,
+    "per_bucket_spearman": {
+      "brown": 0.4286742759979159,
+      "dark": 0.38284051381930023,
+      "intermediate": 0.48180931504381586,
+      "light": 0.48991545376490236,
+      "tan": 0.32568599397194903,
+      "very_light": 0.30393979518213415
+    },
+    "worst_bucket_spearman": 0.30393979518213415,
+    "bucket_spread": 0.1859756585827682,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 4.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.425834864300373,
+    "per_bucket_spearman": {
+      "brown": 0.4172114424121311,
+      "dark": 0.30062470082910553,
+      "intermediate": 0.4765261196833561,
+      "light": 0.44446902360551643,
+      "tan": 0.36162125434555953,
+      "very_light": 0.4244880547681041
+    },
+    "worst_bucket_spearman": 0.30062470082910553,
+    "bucket_spread": 0.1759014188542506,
+    "median_count_iga0": 0.5,
+    "median_count_iga4": 5.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.39871772593222393,
+    "per_bucket_spearman": {
+      "brown": 0.3677655861987427,
+      "dark": 0.3710833638756186,
+      "intermediate": 0.5569380883873534,
+      "light": 0.36010225946341917,
+      "tan": 0.2926008580466954,
+      "very_light": 0.3814815257492563
+    },
+    "worst_bucket_spearman": 0.2926008580466954,
+    "bucket_spread": 0.264337230340658,
+    "median_count_iga0": 1.0,
+    "median_count_iga4": 3.5
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3878048892760598,
+    "per_bucket_spearman": {
+      "brown": 0.2974431630672521,
+      "dark": 0.42026875840610495,
+      "intermediate": 0.4977854762967714,
+      "light": 0.43221641216259105,
+      "tan": 0.2916613718435665,
+      "very_light": 0.37959475314885327
+    },
+    "worst_bucket_spearman": 0.2916613718435665,
+    "bucket_spread": 0.2061241044532049,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 3.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.35902172316143083,
+    "per_bucket_spearman": {
+      "brown": 0.29882790592725833,
+      "dark": 0.3923079195457293,
+      "intermediate": 0.3773160614940472,
+      "light": 0.3522431419934853,
+      "tan": 0.28747182780852465,
+      "very_light": 0.5477914939765489
+    },
+    "worst_bucket_spearman": 0.28747182780852465,
+    "bucket_spread": 0.26031966616802427,
+    "median_count_iga0": 2.0,
+    "median_count_iga4": 7.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.47447009719015787,
+    "per_bucket_spearman": {
+      "brown": 0.5389101361693031,
+      "dark": 0.2866686075547818,
+      "intermediate": 0.5297347705209376,
+      "light": 0.5355593060230048,
+      "tan": 0.3824090733325917,
+      "very_light": 0.35445017195546047
+    },
+    "worst_bucket_spearman": 0.2866686075547818,
+    "bucket_spread": 0.25224152861452126,
+    "median_count_iga0": 3.0,
+    "median_count_iga4": 13.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.43181028168411106,
+    "per_bucket_spearman": {
+      "brown": 0.45527196292659733,
+      "dark": 0.35423368458907234,
+      "intermediate": 0.4894476951127878,
+      "light": 0.4401545574423927,
+      "tan": 0.2855064598248798,
+      "very_light": 0.5257343130569443
+    },
+    "worst_bucket_spearman": 0.2855064598248798,
+    "bucket_spread": 0.24022785323206447,
+    "median_count_iga0": 3.0,
+    "median_count_iga4": 10.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3757979968626608,
+    "per_bucket_spearman": {
+      "brown": 0.2832269941671656,
+      "dark": 0.4322668983030486,
+      "intermediate": 0.47415329366080566,
+      "light": 0.4273245947022198,
+      "tan": 0.3137990521661978,
+      "very_light": 0.41056954588348094
+    },
+    "worst_bucket_spearman": 0.2832269941671656,
+    "bucket_spread": 0.19092629949364004,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 3.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.36664052571209155,
+    "per_bucket_spearman": {
+      "brown": 0.3248513110348876,
+      "dark": 0.36901591374429066,
+      "intermediate": 0.3917451401062281,
+      "light": 0.35450838889728775,
+      "tan": 0.282750236501361,
+      "very_light": 0.4600885650177397
+    },
+    "worst_bucket_spearman": 0.282750236501361,
+    "bucket_spread": 0.1773383285163787,
+    "median_count_iga0": 2.0,
+    "median_count_iga4": 7.5
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": 20.0
+    },
+    "overall_spearman": 0.33950868501718623,
+    "per_bucket_spearman": {
+      "brown": 0.3543091434006003,
+      "dark": 0.33148549937251093,
+      "intermediate": 0.35431410964832416,
+      "light": 0.3535008358448217,
+      "tan": 0.2634964374070397,
+      "very_light": 0.4039966162881992
+    },
+    "worst_bucket_spearman": 0.2634964374070397,
+    "bucket_spread": 0.1405001788811595,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": 20.0
+    },
+    "overall_spearman": 0.37629531689521234,
+    "per_bucket_spearman": {
+      "brown": 0.3478354761908273,
+      "dark": 0.2591124848070339,
+      "intermediate": 0.5070024440652846,
+      "light": 0.4408075905968369,
+      "tan": 0.3248594477900237,
+      "very_light": 0.3115854495543725
+    },
+    "worst_bucket_spearman": 0.2591124848070339,
+    "bucket_spread": 0.2478899592582507,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3426018869663586,
+    "per_bucket_spearman": {
+      "brown": 0.24626961910574222,
+      "dark": 0.3463895246469436,
+      "intermediate": 0.4806229701509613,
+      "light": 0.4453581045632569,
+      "tan": 0.263459678874535,
+      "very_light": 0.2764619376166873
+    },
+    "worst_bucket_spearman": 0.24626961910574222,
+    "bucket_spread": 0.23435335104521907,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3708980407125065,
+    "per_bucket_spearman": {
+      "brown": 0.3506866291316384,
+      "dark": 0.4101112683708272,
+      "intermediate": 0.5445702653675099,
+      "light": 0.24133706673764602,
+      "tan": 0.2451002369197227,
+      "very_light": 0.4058890722888461
+    },
+    "worst_bucket_spearman": 0.24133706673764602,
+    "bucket_spread": 0.30323319862986386,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 3.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.371231113830339,
+    "per_bucket_spearman": {
+      "brown": 0.2702483895508346,
+      "dark": 0.3774232790320504,
+      "intermediate": 0.5925338650200851,
+      "light": 0.4978399324844646,
+      "tan": 0.2663252222972484,
+      "very_light": 0.23716520400439645
+    },
+    "worst_bucket_spearman": 0.23716520400439645,
+    "bucket_spread": 0.35536866101568865,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": 20.0
+    },
+    "overall_spearman": 0.3808371442536081,
+    "per_bucket_spearman": {
+      "brown": 0.4501522779936083,
+      "dark": 0.22996206523589638,
+      "intermediate": 0.33049008579486416,
+      "light": 0.4219202938528172,
+      "tan": 0.40356185880205175,
+      "very_light": 0.41075187250007983
+    },
+    "worst_bucket_spearman": 0.22996206523589638,
+    "bucket_spread": 0.22019021275771192,
+    "median_count_iga0": 1.0,
+    "median_count_iga4": 5.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3688201896864424,
+    "per_bucket_spearman": {
+      "brown": 0.3423584566173093,
+      "dark": 0.4319058665334401,
+      "intermediate": 0.5005390298509804,
+      "light": 0.2295681336830807,
+      "tan": 0.2690767375353787,
+      "very_light": 0.5037326485497214
+    },
+    "worst_bucket_spearman": 0.2295681336830807,
+    "bucket_spread": 0.27416451486664073,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.5
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3327588605028486,
+    "per_bucket_spearman": {
+      "brown": 0.22951316102608513,
+      "dark": 0.34877106702305577,
+      "intermediate": 0.4596247742013382,
+      "light": 0.447206921446809,
+      "tan": 0.26301665772094013,
+      "very_light": 0.33717197556422407
+    },
+    "worst_bucket_spearman": 0.22951316102608513,
+    "bucket_spread": 0.23011161317525305,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3491194738281619,
+    "per_bucket_spearman": {
+      "brown": 0.2974429936935546,
+      "dark": 0.42026875840610495,
+      "intermediate": 0.4261620064931638,
+      "light": 0.4284572302800421,
+      "tan": 0.2292670695662248,
+      "very_light": 0.26783710422075496
+    },
+    "worst_bucket_spearman": 0.2292670695662248,
+    "bucket_spread": 0.19919016071381732,
+    "median_count_iga0": 1.0,
+    "median_count_iga4": 3.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3293511556480603,
+    "per_bucket_spearman": {
+      "brown": 0.3248513110348876,
+      "dark": 0.36901591374429066,
+      "intermediate": 0.33520383219502553,
+      "light": 0.3503603628497399,
+      "tan": 0.22127835250293326,
+      "very_light": 0.32218849156094603
+    },
+    "worst_bucket_spearman": 0.22127835250293326,
+    "bucket_spread": 0.1477375612413574,
+    "median_count_iga0": 3.0,
+    "median_count_iga4": 7.5
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3848108172966239,
+    "per_bucket_spearman": {
+      "brown": 0.45527171522687654,
+      "dark": 0.35423368458907234,
+      "intermediate": 0.42209867703359705,
+      "light": 0.4331459911517901,
+      "tan": 0.21877548420189463,
+      "very_light": 0.3173817661179134
+    },
+    "worst_bucket_spearman": 0.21877548420189463,
+    "bucket_spread": 0.2364962310249819,
+    "median_count_iga0": 3.0,
+    "median_count_iga4": 10.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3808816766941271,
+    "per_bucket_spearman": {
+      "brown": 0.4166909430536316,
+      "dark": 0.3001190728933979,
+      "intermediate": 0.4250501796216943,
+      "light": 0.43632399765610635,
+      "tan": 0.3029045759821008,
+      "very_light": 0.21653141181099936
+    },
+    "worst_bucket_spearman": 0.21653141181099936,
+    "bucket_spread": 0.219792585845107,
+    "median_count_iga0": 1.0,
+    "median_count_iga4": 5.0
+  },
+  {
+    "params": {
+      "std_multiplier": 3.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.33784560678594344,
+    "per_bucket_spearman": {
+      "brown": 0.27754233232951303,
+      "dark": 0.35813737617975866,
+      "intermediate": 0.39887612371381387,
+      "light": 0.43524248979457436,
+      "tan": 0.2114721107150257,
+      "very_light": 0.5665213298842234
+    },
+    "worst_bucket_spearman": 0.2114721107150257,
+    "bucket_spread": 0.35504921916919774,
+    "median_count_iga0": 1.0,
+    "median_count_iga4": 5.0
+  },
+  {
+    "params": {
+      "std_multiplier": 3.0,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.33868543441386206,
+    "per_bucket_spearman": {
+      "brown": 0.2987178066834502,
+      "dark": 0.3837673527987112,
+      "intermediate": 0.3970171928087591,
+      "light": 0.43426763723127054,
+      "tan": 0.2079461622253182,
+      "very_light": 0.46488430388614693
+    },
+    "worst_bucket_spearman": 0.2079461622253182,
+    "bucket_spread": 0.25693814166082873,
+    "median_count_iga0": 1.5,
+    "median_count_iga4": 6.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": 20.0
+    },
+    "overall_spearman": 0.28522146557953265,
+    "per_bucket_spearman": {
+      "brown": 0.3066199879105248,
+      "dark": 0.20618174912155113,
+      "intermediate": 0.2975864927990399,
+      "light": 0.35996739101710024,
+      "tan": 0.303523440342794,
+      "very_light": 0.2944739143297937
+    },
+    "worst_bucket_spearman": 0.20618174912155113,
+    "bucket_spread": 0.1537856418955491,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.306672857158062,
+    "per_bucket_spearman": {
+      "brown": 0.24097776117848319,
+      "dark": 0.2588593083228771,
+      "intermediate": 0.46010365621068855,
+      "light": 0.5056427006616485,
+      "tan": 0.20444077263856536,
+      "very_light": 0.25105452628253466
+    },
+    "worst_bucket_spearman": 0.20444077263856536,
+    "bucket_spread": 0.30120192802308315,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 0.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3090933868034766,
+    "per_bucket_spearman": {
+      "brown": 0.24626961910574222,
+      "dark": 0.3463895246469436,
+      "intermediate": 0.41124813614099787,
+      "light": 0.4413613010607661,
+      "tan": 0.20349930361571,
+      "very_light": 0.19655392701533272
+    },
+    "worst_bucket_spearman": 0.19655392701533272,
+    "bucket_spread": 0.24480737404543337,
+    "median_count_iga0": 0.5,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": 20.0
+    },
+    "overall_spearman": 0.25717913345600946,
+    "per_bucket_spearman": {
+      "brown": 0.31166446995635083,
+      "dark": 0.1956059758538449,
+      "intermediate": 0.2649161806189638,
+      "light": 0.19427794670236775,
+      "tan": 0.22678126452479133,
+      "very_light": 0.30219930361712655
+    },
+    "worst_bucket_spearman": 0.19427794670236775,
+    "bucket_spread": 0.11738652325398308,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3320793604984832,
+    "per_bucket_spearman": {
+      "brown": 0.3506866291316384,
+      "dark": 0.4101112683708272,
+      "intermediate": 0.4678077867069496,
+      "light": 0.23735119747666641,
+      "tan": 0.1919213360765211,
+      "very_light": 0.251962442468959
+    },
+    "worst_bucket_spearman": 0.1919213360765211,
+    "bucket_spread": 0.2758864506304285,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 3.0
+  },
+  {
+    "params": {
+      "std_multiplier": 3.0,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.285569269259128,
+    "per_bucket_spearman": {
+      "brown": 0.19057991817777145,
+      "dark": 0.35833803836440237,
+      "intermediate": 0.3102614198110571,
+      "light": 0.5421700527750324,
+      "tan": 0.20153365616605048,
+      "very_light": 0.20105983426825086
+    },
+    "worst_bucket_spearman": 0.19057991817777145,
+    "bucket_spread": 0.35159013459726096,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.36190647789370123,
+    "per_bucket_spearman": {
+      "brown": 0.25037136019369083,
+      "dark": 0.44165982149174526,
+      "intermediate": 0.6361953517232347,
+      "light": 0.5421631916679469,
+      "tan": 0.1874647137553031,
+      "very_light": 0.2865584675198576
+    },
+    "worst_bucket_spearman": 0.1874647137553031,
+    "bucket_spread": 0.4487306379679316,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.0
+  },
+  {
+    "params": {
+      "std_multiplier": 3.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.28377696481603176,
+    "per_bucket_spearman": {
+      "brown": 0.17808384043981873,
+      "dark": 0.3524775696268354,
+      "intermediate": 0.2968357034521335,
+      "light": 0.5434884599512728,
+      "tan": 0.20155015983732755,
+      "very_light": 0.2866018308014669
+    },
+    "worst_bucket_spearman": 0.17808384043981873,
+    "bucket_spread": 0.3654046195114541,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.5
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": 20.0
+    },
+    "overall_spearman": 0.32990971673185043,
+    "per_bucket_spearman": {
+      "brown": 0.3465968663389963,
+      "dark": 0.18255725551258292,
+      "intermediate": 0.40245589203042864,
+      "light": 0.44298541536317837,
+      "tan": 0.2682051254213256,
+      "very_light": 0.17338036225130726
+    },
+    "worst_bucket_spearman": 0.17338036225130726,
+    "bucket_spread": 0.2696050531118711,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3426278412609015,
+    "per_bucket_spearman": {
+      "brown": 0.1706939727985052,
+      "dark": 0.4188764697080219,
+      "intermediate": 0.6019508884965028,
+      "light": 0.5733945155135366,
+      "tan": 0.26295334499479217,
+      "very_light": 0.22684818131895895
+    },
+    "worst_bucket_spearman": 0.1706939727985052,
+    "bucket_spread": 0.4312569156979976,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 5e-05,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.41868371069968824,
+    "per_bucket_spearman": {
+      "brown": 0.5010524961692178,
+      "dark": 0.2465616278221554,
+      "intermediate": 0.5310469057370828,
+      "light": 0.17031928140173852,
+      "tan": 0.5263803789982114,
+      "very_light": 0.4006590287304087
+    },
+    "worst_bucket_spearman": 0.17031928140173852,
+    "bucket_spread": 0.3607276243353443,
+    "median_count_iga0": 9.0,
+    "median_count_iga4": 19.5
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 5e-05,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.31578755602999864,
+    "per_bucket_spearman": {
+      "brown": 0.3665851142312705,
+      "dark": 0.16873361954908206,
+      "intermediate": 0.41390324367852194,
+      "light": 0.19643614261887365,
+      "tan": 0.23666799902456626,
+      "very_light": 0.45007115559389005
+    },
+    "worst_bucket_spearman": 0.16873361954908206,
+    "bucket_spread": 0.281337536044808,
+    "median_count_iga0": 6.0,
+    "median_count_iga4": 12.0
+  },
+  {
+    "params": {
+      "std_multiplier": 3.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.36570822948534026,
+    "per_bucket_spearman": {
+      "brown": 0.3841874404314505,
+      "dark": 0.38211965864097647,
+      "intermediate": 0.5133014757874376,
+      "light": 0.42275214788314824,
+      "tan": 0.16844876236510517,
+      "very_light": 0.4037066363084523
+    },
+    "worst_bucket_spearman": 0.16844876236510517,
+    "bucket_spread": 0.34485271342233237,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 3.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3297110026802419,
+    "per_bucket_spearman": {
+      "brown": 0.27872935382119673,
+      "dark": 0.35459131030205715,
+      "intermediate": 0.48307299895224004,
+      "light": 0.5013093879204069,
+      "tan": 0.20547489273796915,
+      "very_light": 0.16358544537601483
+    },
+    "worst_bucket_spearman": 0.16358544537601483,
+    "bucket_spread": 0.3377239425443921,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 0.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.01,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.35246318648819513,
+    "per_bucket_spearman": {
+      "brown": 0.36776537861432396,
+      "dark": 0.3710833638756186,
+      "intermediate": 0.48527816137577845,
+      "light": 0.3530813174624846,
+      "tan": 0.2347960749989533,
+      "very_light": 0.16204166584207724
+    },
+    "worst_bucket_spearman": 0.16204166584207724,
+    "bucket_spread": 0.3232364955337012,
+    "median_count_iga0": 1.0,
+    "median_count_iga4": 3.5
+  },
+  {
+    "params": {
+      "std_multiplier": 2.5,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.30090421066077994,
+    "per_bucket_spearman": {
+      "brown": 0.24554971202462328,
+      "dark": 0.22487141531333726,
+      "intermediate": 0.4822271878392865,
+      "light": 0.507941790629814,
+      "tan": 0.2069425716205926,
+      "very_light": 0.1600085280773789
+    },
+    "worst_bucket_spearman": 0.1600085280773789,
+    "bucket_spread": 0.3479332625524352,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 0.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.339296064410147,
+    "per_bucket_spearman": {
+      "brown": 0.15795794372647182,
+      "dark": 0.3916546750888834,
+      "intermediate": 0.5594401383468744,
+      "light": 0.5419406155381765,
+      "tan": 0.29804151146802943,
+      "very_light": 0.15599772992261704
+    },
+    "worst_bucket_spearman": 0.15599772992261704,
+    "bucket_spread": 0.4034424084242574,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.0
+  },
+  {
+    "params": {
+      "std_multiplier": 2.0,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": 20.0
+    },
+    "overall_spearman": 0.23246780723222074,
+    "per_bucket_spearman": {
+      "brown": 0.20322866445261437,
+      "dark": 0.1529209321484757,
+      "intermediate": 0.2767572931593243,
+      "light": 0.26211935842899703,
+      "tan": 0.2120093183202321,
+      "very_light": 0.30570429885179384
+    },
+    "worst_bucket_spearman": 0.1529209321484757,
+    "bucket_spread": 0.15278336670331813,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.0
+  },
+  {
+    "params": {
+      "std_multiplier": 3.0,
+      "min_absolute_erythema": 0.025,
+      "min_area_fraction": 0.0002,
+      "min_circularity": 0.55,
+      "max_darkness": Infinity
+    },
+    "overall_spearman": 0.3614864225494646,
+    "per_bucket_spearman": {
+      "brown": 0.38979684727759456,
+      "dark": 0.3965878602289144,
+      "intermediate": 0.5341969725940852,
+      "light": 0.4252882379451828,
+      "tan": 0.1500908107212564,
+      "very_light": 0.3278346401169345
+    },
+    "worst_bucket_spearman": 0.1500908107212564,
+    "bucket_spread": 0.38410616187282876,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 2.0
+  },
+  {
+    "params": {
+      "std_multiplier": 1.5,
+      "min_absolute_erythema": 0.045,
+      "min_area_fraction": 0.0006,
+      "min_circularity": 0.35,
+      "max_darkness": 8.0
+    },
+    "overall_spearman": 0.2284457349185883,
+    "per_bucket_spearman": {
+      "brown": 0.23205296981930418,
+      "dark": 0.1494070737082183,
+      "intermediate": 0.16197594164325924,
+      "light": 0.36148052224972604,
+      "tan": 0.16682198526448527,
+      "very_light": 0.3262127280224201
+    },
+    "worst_bucket_spearman": 0.1494070737082183,
+    "bucket_spread": 0.21207344854150775,
+    "median_count_iga0": 0.0,
+    "median_count_iga4": 1.0
+  }
+]
