@@ -210,6 +210,16 @@ def show_capture_page() -> None:
         "automatically or by hand."
     )
 
+    # The hosted build runs as a single shared instance with one database,
+    # so any upload is visible to every other visitor on the Dashboard.
+    st.warning(
+        "**Shared public demo - do not upload a real photo of yourself or "
+        "of anyone else.** This deployment stores every upload in one "
+        "shared database, so images and results are visible to all other "
+        "visitors. Use a sample or stock image. Uploads are also erased "
+        "whenever the server restarts."
+    )
+
     uploaded_image = st.file_uploader(
         "Choose a facial image",
         type=["jpg", "jpeg", "png"],

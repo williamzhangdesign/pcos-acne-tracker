@@ -1,7 +1,13 @@
-streamlit
-pandas
-pillow
-opencv-python-headless
-numpy
-scikit-learn
-joblib
+# Pinned exactly: the trained model in ml/models/ is pickled against these,
+# and a different major version of scikit-learn or numpy can fail to
+# unpickle it or silently change behaviour.
+scikit-learn==1.6.1
+joblib==1.5.3
+numpy==2.0.2
+
+# Looser bounds are fine here. opencv must be >=4.5.4 for FaceDetectorYN,
+# and the headless build avoids needing system GUI libraries on a server.
+streamlit>=1.30
+pandas>=2.0
+pillow>=10.0
+opencv-python-headless>=4.8
