@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import sqlite3
 import sys
-import time
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -36,118 +35,6 @@ IMAGES_FOLDER = DATA_FOLDER / "images"
 IMAGES_FOLDER.mkdir(exist_ok=True)
 
 DATABASE_PATH = DATA_FOLDER / "tracker.db"
-
-# Bound what the vision pipeline ever processes. Cost grows faster than
-# linearly with image dimensions, because the detector's baseline blur
-# radius scales with the image, so an unbounded upload is a denial of
-# service: measured, a 64 MP photo takes ~3.7 minutes of pinned CPU versus
-# 40 ms at 640px. Modern phone cameras reach that size without anyone
-# attacking anything. The models were trained and tuned on 640px images,
-# so bounding here also keeps inference near the training distribution.
-MAX_WORKING_DIMENSION = 1024
-
-# Refuse to even decode absurd images, which guards against a small file
-# that decompresses to an enormous bitmap.
-Image.MAX_IMAGE_PIXELS = 50_000_000
-
-# The deployed instance has finite ephemeral disk; keep only recent images.
-MAX_STORED_IMAGES = 200
-
-# Minimum gap between saves from one session, to blunt scripted spamming.
-MIN_SECONDS_BETWEEN_SAVES = 3.0
-
-# Hard ceilings for the whole deployment. Once either is reached the
-# uploader is disabled outright rather than merely throttled, so no amount
-# of persistence can grow the database or the disk any further. These are
-# global, not per-session, because sessions are trivially reset.
-MAX_TOTAL_ACNE_RECORDS = 500
-MAX_TOTAL_FOOD_RECORDS = 500
-MAX_TOTAL_IMAGE_BYTES = 100 * 1024 * 1024  # 100 MB
-
-
-class ImageTooLargeError(Exception):
-    """Raised for an image whose pixel count is refused before decoding."""
-
-
-def prepare_image(uploaded_image) -> Image.Image:
-    """Decode an upload and clamp it to a size the CV pipeline can afford."""
-    uploaded_image.seek(0)
-    image = Image.open(uploaded_image)
-
-    # Image.open only reads the header, so the dimensions are known before
-    # any pixels are decoded. Checking here means an oversized image is
-    # refused without ever allocating its bitmap - relying on Pillow alone
-    # is not enough, since it only warns at MAX_IMAGE_PIXELS and does not
-    # raise until twice that.
-    width, height = image.size
-    if width * height > Image.MAX_IMAGE_PIXELS:
-        raise ImageTooLargeError(f"{width}x{height} exceeds the pixel limit")
-
-    image.load()
-    image = image.convert("RGB")
-    if max(image.size) > MAX_WORKING_DIMENSION:
-        image.thumbnail(
-            (MAX_WORKING_DIMENSION, MAX_WORKING_DIMENSION),
-            Image.LANCZOS,
-        )
-    return image
-
-
-def prune_stored_images() -> None:
-    """Delete all but the most recent MAX_STORED_IMAGES uploads."""
-    files = sorted(
-        (p for p in IMAGES_FOLDER.iterdir() if p.is_file()),
-        key=lambda p: p.stat().st_mtime,
-    )
-    for stale in files[:-MAX_STORED_IMAGES]:
-        stale.unlink(missing_ok=True)
-
-
-def stored_image_bytes() -> int:
-    """Total bytes currently held in the uploads folder."""
-    return sum(
-        p.stat().st_size for p in IMAGES_FOLDER.iterdir() if p.is_file()
-    )
-
-
-def count_records(table: str) -> int:
-    """Row count for one of the two known tables."""
-    if table not in ("acne_records", "food_records"):
-        raise ValueError(f"unknown table: {table}")
-    with connect_to_database() as connection:
-        return int(
-            connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
-        )
-
-
-def capture_quota_reason() -> str | None:
-    """
-    Why new captures are refused, or None if they are still allowed.
-
-    This is the hard stop: the caller disables the uploader entirely, so a
-    visitor cannot submit anything further once a ceiling is reached.
-    """
-    if count_records("acne_records") >= MAX_TOTAL_ACNE_RECORDS:
-        return (
-            f"This demo has reached its limit of "
-            f"{MAX_TOTAL_ACNE_RECORDS} saved acne records."
-        )
-    if stored_image_bytes() >= MAX_TOTAL_IMAGE_BYTES:
-        return (
-            f"This demo has reached its image storage limit of "
-            f"{MAX_TOTAL_IMAGE_BYTES // (1024 * 1024)} MB."
-        )
-    return None
-
-
-def save_is_rate_limited() -> bool:
-    """True if this session saved too recently."""
-    last = st.session_state.get("last_save_time")
-    now = time.monotonic()
-    if last is not None and now - last < MIN_SECONDS_BETWEEN_SAVES:
-        return True
-    st.session_state["last_save_time"] = now
-    return False
 
 
 st.set_page_config(
@@ -238,21 +125,14 @@ def save_acne_record(
         )
 
 
-def save_uploaded_image(image: Image.Image) -> Path:
-    """
-    Save the already-bounded image under a unique generated filename.
-
-    The resized image is stored rather than the raw upload: it is what was
-    actually analysed, and it keeps disk use predictable on an ephemeral
-    host (the raw file may be orders of magnitude larger). The filename is
-    generated rather than derived from the upload, so a hostile filename
-    cannot influence the write path.
-    """
+def save_uploaded_image(uploaded_image) -> Path:
+    """Save an uploaded image to disk under a unique filename."""
+    suffix = Path(uploaded_image.name).suffix or ".png"
     unique_name = (
-        f"{datetime.now():%Y%m%d%H%M%S}_{uuid.uuid4().hex[:8]}.jpg"
+        f"{datetime.now():%Y%m%d%H%M%S}_{uuid.uuid4().hex[:8]}{suffix}"
     )
     destination = IMAGES_FOLDER / unique_name
-    image.save(destination, format="JPEG", quality=88)
+    destination.write_bytes(uploaded_image.getbuffer())
     return destination
 
 
@@ -340,20 +220,12 @@ def show_capture_page() -> None:
         "whenever the server restarts."
     )
 
-    quota_reason = capture_quota_reason()
-    if quota_reason:
-        st.error(
-            f"{quota_reason} Uploads are closed until the demo is reset. "
-            "The Dashboard still works."
-        )
-
     uploaded_image = st.file_uploader(
         "Choose a facial image",
         type=["jpg", "jpeg", "png"],
-        disabled=bool(quota_reason),
     )
 
-    if uploaded_image is not None and not quota_reason:
+    if uploaded_image is not None:
         st.image(
             uploaded_image,
             caption="Selected image",
@@ -368,18 +240,6 @@ def show_capture_page() -> None:
 
         confidence = None
 
-        try:
-            working_image = prepare_image(uploaded_image)
-        except (ImageTooLargeError, Image.DecompressionBombError):
-            st.error(
-                "That image is too large to process. Please upload a "
-                "smaller photo."
-            )
-            return
-        except Exception:
-            st.error("That file could not be read as an image.")
-            return
-
         if count_source == "Automated (beta)":
             st.info(
                 "Automated mode: a severity classifier (trained on the "
@@ -391,11 +251,15 @@ def show_capture_page() -> None:
                 "review them before saving."
             )
 
-            prediction = predict_severity(working_image)
+            uploaded_image.seek(0)
+            pil_image = Image.open(uploaded_image)
+
+            prediction = predict_severity(pil_image)
             severity = format_severity(prediction.grade)
             confidence = prediction.confidence
 
-            detection = detect_lesions(working_image)
+            uploaded_image.seek(0)
+            detection = detect_lesions(Image.open(uploaded_image))
             lesion_count = detection.lesion_count
             source = "automated"
 
@@ -449,17 +313,7 @@ def show_capture_page() -> None:
                 st.metric("Severity", severity)
 
         if st.button("Save acne result", type="primary"):
-            blocked = capture_quota_reason()
-            if blocked:
-                st.error(f"{blocked} This entry was not saved.")
-                return
-
-            if save_is_rate_limited():
-                st.warning("Please wait a moment before saving again.")
-                return
-
-            saved_image_path = save_uploaded_image(working_image)
-            prune_stored_images()
+            saved_image_path = save_uploaded_image(uploaded_image)
             save_acne_record(
                 lesion_count=int(lesion_count),
                 severity=severity,
@@ -476,7 +330,6 @@ def show_food_log_page() -> None:
     food_description = st.text_input(
         "What did you eat?",
         placeholder="Example: cereal with milk and sweetened coffee",
-        max_chars=200,
     )
 
     high_glycemic = st.checkbox("High-glycemic food")
@@ -486,17 +339,6 @@ def show_food_log_page() -> None:
     if st.button("Save food entry", type="primary"):
         if not food_description.strip():
             st.warning("Please type a food or meal first.")
-            return
-
-        if count_records("food_records") >= MAX_TOTAL_FOOD_RECORDS:
-            st.error(
-                f"This demo has reached its limit of "
-                f"{MAX_TOTAL_FOOD_RECORDS} food entries."
-            )
-            return
-
-        if save_is_rate_limited():
-            st.warning("Please wait a moment before saving again.")
             return
 
         save_food_record(
